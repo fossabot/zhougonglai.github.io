@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/theming";
+@import '~@covalent/core/theming/all-theme';
+
+// (optional) Additional themes
+@import '~@covalent/markdown/markdown-theme';
+@import '~@covalent/highlight/highlight-theme';
+
+@include mat-core();
+
+//pink
+$primary: mat-palette($mat-blue, 500);
+$accent:  mat-palette($mat-yellow, 500);
+
+$warn:    mat-palette($mat-red, 500);
+
+$theme: mat-light-theme($primary, $accent, $warn);
+
+@include angular-material-theme($theme);
+@include covalent-theme($theme);
+
+// (optional) Additional themes
+@include covalent-markdown-theme($theme);
+@include covalent-highlight-theme();
