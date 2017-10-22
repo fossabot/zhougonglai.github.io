@@ -535,6 +535,7 @@ var SwitchPagesDirective = (function () {
             _this.pageIndex = direction ? (_this.pageIndex + size) : (_this.pageIndex - size);
             _this.pageIndexChange.emit(_this.pageIndex);
             _this.scrollTop = _this.el.nativeElement.scrollTop;
+            console.log('index', _this.pageIndex, 'scrollTop', _this.scrollTop);
             _this.running = false;
         });
     };
@@ -549,8 +550,11 @@ var SwitchPagesDirective = (function () {
         if (direction === void 0) { direction = true; }
         if (size === void 0) { size = 1; }
         return new Promise(function (resolve, reject) {
+            var scrollSize = direction ?
+                _this.scrollTop + size * _this.el.nativeElement.clientHeight :
+                _this.scrollTop - size * _this.el.nativeElement.clientHeight;
             __WEBPACK_IMPORTED_MODULE_1_gsap__["TweenMax"].to(_this.el.nativeElement, 1, {
-                scrollTop: (direction ? '+' : '-') + "=" + size * _this.el.nativeElement.children[0].clientHeight + "px",
+                scrollTop: scrollSize,
                 ease: __WEBPACK_IMPORTED_MODULE_1_gsap__["Power2"].easeInOut,
                 onComplete: function () {
                     resolve();
