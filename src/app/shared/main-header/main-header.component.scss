@@ -1,0 +1,39 @@
+$header: 64px;
+$icon: 42px;
+
+:host {
+  height: $header;
+  display: flex;
+  flex:1;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  background: transparent;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 0 50px;
+  box-sizing: border-box;
+  header{
+    display: flex;
+    #logo{
+      width: $icon;
+      height: $icon;
+      padding: ($header - $icon) /2;
+    }
+    .title{
+      display: inline-flex;
+      align-items: center;
+      .brad{
+        color: #fff;
+      }
+    }
+
+    .nav-tools{
+
+      .nav-link{
+        color: #fff;
+      }
+    }
+  }
+}

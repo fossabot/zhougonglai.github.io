@@ -14,7 +14,7 @@ import { AppRoutingModule, routedComponents } from './app-routing.module';
   declarations: [
     AppComponent,
     MainComponent,
-    routedComponents
+    routedComponents,
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, CoreModule, SharedModule,

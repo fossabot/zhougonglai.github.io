@@ -9,8 +9,11 @@ import {
   CovalentCommonModule, CovalentDialogsModule,
 } from '@covalent/core';
 import {
-  MatButtonModule, CompatibilityModule
+  MatButtonModule, MatToolbarModule,
+  CompatibilityModule, MatIconModule,
 } from '@angular/material';
+import { MainHeaderComponent } from './main-header';
+import { SwitchPagesDirective } from './switch-pages';
 
 const FLEX_LAYOUT_MODULES: any[] = [
   FlexLayoutModule,
@@ -28,7 +31,7 @@ const COVALENT_MODULES: any[] = [
 ];
 
 const MATERIAL_MODULES: any[] = [
-  MatButtonModule, CompatibilityModule
+  MatButtonModule, CompatibilityModule, MatToolbarModule, MatIconModule
 ];
 
 @NgModule({
@@ -39,12 +42,18 @@ const MATERIAL_MODULES: any[] = [
     COVALENT_MODULES,
     MATERIAL_MODULES,
   ],
+  declarations: [
+    MainHeaderComponent,
+    SwitchPagesDirective
+  ],
   exports: [
     CommonModule,
     ANGULAR_MODULES,
     FLEX_LAYOUT_MODULES,
     COVALENT_MODULES,
     MATERIAL_MODULES,
+    MainHeaderComponent,
+    SwitchPagesDirective
   ]
 })
 export class SharedModule {

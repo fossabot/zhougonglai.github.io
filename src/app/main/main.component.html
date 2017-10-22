@@ -1,3 +1,36 @@
-<p>
-  main works!
-</p>
+<app-main-header></app-main-header>
+<div class="main-content" appSwitchPages [currentIndex]="pageIndex">
+  <div class="page">
+    <div class="content-wrapper">
+      <div class="box">
+        <h3 class="box-title">我的最佳理财云笔记工具</h3>
+        <form class="form">
+          <div class="form-control">
+            <input type="text">
+          </div>
+          <button mat-button>加入我们</button>
+        </form>
+      </div>
+      <button mat-icon-button class="next-page" (click)="nextPage()">
+        <mat-icon aria-label="下一页" class="white">keyboard_arrow_down</mat-icon>
+      </button>
+    </div>
+
+    <div class="video-wrapper">
+      <video src="../../assets/source/cat.mp4" autoPlay loop muted></video>
+    </div>
+  </div>
+  <div class="page">
+    page 1
+  </div>
+
+  <div class="page">
+    page 2
+  </div>
+  <div class="page">
+    page 3
+  </div>
+  <div class="page">
+    page 4
+  </div>
+</div>
