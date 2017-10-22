@@ -35,9 +35,9 @@ export class SwitchPagesDirective {
     if (this.running) {
       return;
     }
-    if (this.el.nativeElement.scrollTop > this.scrollTop) {
+    if (this.el.nativeElement.scrollTop - this.scrollTop > 25) {
       this.scrollTer();
-    } else {
+    } else if (this.scrollTop - this.el.nativeElement.scrollTop > 25) {
       this.scrollTer(false);
     }
   }
@@ -52,8 +52,8 @@ export class SwitchPagesDirective {
     this.scrollProcess(direction, size).then(() => {
       this.pageIndex = direction ? (this.pageIndex + size) : (this.pageIndex - size);
       this.pageIndexChange.emit(this.pageIndex);
-      console.log(`第${this.pageIndex}页`);
       this.scrollTop = this.el.nativeElement.scrollTop;
+      console.log('index', this.pageIndex, 'scrollTop', this.scrollTop);
       this.running = false;
     });
   }
@@ -66,8 +66,11 @@ export class SwitchPagesDirective {
    */
   scrollProcess(direction: boolean = true, size: number = 1) {
     return new Promise((resolve, reject) => {
+      const scrollSize = direction ?
+        this.scrollTop + size * this.el.nativeElement.clientHeight :
+        this.scrollTop - size * this.el.nativeElement.clientHeight;
       TweenMax.to(this.el.nativeElement, 1, {
-        scrollTop: `${direction ? '+' : '-'}=${size * this.el.nativeElement.children[0].clientHeight}px`,
+        scrollTop: scrollSize,
         ease: Power2.easeInOut,
         onComplete() {
           resolve();
