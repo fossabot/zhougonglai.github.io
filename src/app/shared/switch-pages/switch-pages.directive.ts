@@ -27,7 +27,7 @@ export class SwitchPagesDirective {
   }
 
   /**
-   * 滚动事件
+   * 滚动事件 {阀值} +- 25
    * @param {Event} $event
    */
   @HostListener('scroll', ['$event'])
@@ -53,7 +53,6 @@ export class SwitchPagesDirective {
       this.pageIndex = direction ? (this.pageIndex + size) : (this.pageIndex - size);
       this.pageIndexChange.emit(this.pageIndex);
       this.scrollTop = this.el.nativeElement.scrollTop;
-      console.log('index', this.pageIndex, 'scrollTop', this.scrollTop);
       this.running = false;
     });
   }
