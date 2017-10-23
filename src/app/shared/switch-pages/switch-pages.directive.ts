@@ -1,43 +1,62 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { TweenMax, Power2 } from 'gsap';
+import { Directive, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2, OnInit } from '@angular/core';
+import { TweenMax, Power2, Expo } from 'gsap';
+
+
+const VERTICAL = 'vertical', HORIZONTAL = 'horizontal';
 
 @Directive({
-  selector: '[appSwitchPages]'
+  selector: '[appSwitchPages]',
+  exportAs: 'appSwitchPages'
 })
-export class SwitchPagesDirective {
+export class SwitchPagesDirective implements OnInit {
   // 当前 滚轴的Y轴位置
-  scrollTop = 0;
+  private scrollTop = 0;
   // 当前 page下标
-  pageIndex = 0;
+  private pageIndex = 0;
   // 滚动中 ?
-  running = false;
+  private running = false;
   // page下标变更通知
-  @Output() pageIndexChange = new EventEmitter();
+  @Output() private pageIndexChange = new EventEmitter();
+
+  @Input() private appSwitchPages: string;
 
   /**
-   * 滚动到 指定页
-   * @param {number} index 目标页下标
+   * 下一页
    */
-  @Input()
-  set currentIndex(index: number) {
-    this.scrollTo(index);
+  public nextPage() {
+    this.scrollTo(this.pageIndex + 1);
   }
 
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef, private renderer: Renderer2) {
+  }
+
+  ngOnInit() {
+    switch (this.appSwitchPages) {
+      case VERTICAL:
+        this.renderer.addClass(this.el.nativeElement, VERTICAL);
+        break;
+      case HORIZONTAL:
+        this.renderer.addClass(this.el.nativeElement, HORIZONTAL);
+        break;
+      default:
+        this.renderer.addClass(this.el.nativeElement, VERTICAL);
+    }
   }
 
   /**
-   * 滚动事件 {阀值} +- 25
+   * 滚动事件 {阀值}
    * @param {Event} $event
    */
   @HostListener('scroll', ['$event'])
-  onScroll($event: Event) {
+  private onScroll($event: Event) {
     if (this.running) {
       return;
     }
-    if (this.el.nativeElement.scrollTop - this.scrollTop > 25) {
+    // console.log(this.el.nativeElement.scrollTop);
+    // {阀值} 是个 经验值 可以是 9 ~ 15之间的值
+    if (this.el.nativeElement.scrollTop - this.scrollTop > 10) {
       this.scrollTer();
-    } else if (this.scrollTop - this.el.nativeElement.scrollTop > 25) {
+    } else if (this.scrollTop - this.el.nativeElement.scrollTop > 10) {
       this.scrollTer(false);
     }
   }
@@ -47,9 +66,11 @@ export class SwitchPagesDirective {
    * @param {boolean} direction 方向 ? true 下 : false 上
    * @param {number} size 翻页的量级
    */
-  public scrollTer(direction: boolean = true, size: number = 1) {
+  protected scrollTer(direction: boolean = true, size: number = 1) {
     this.running = true;
+    // console.log('scroll start');
     this.scrollProcess(direction, size).then(() => {
+    //   console.log('scroll done');
       this.pageIndex = direction ? (this.pageIndex + size) : (this.pageIndex - size);
       this.pageIndexChange.emit(this.pageIndex);
       this.scrollTop = this.el.nativeElement.scrollTop;
@@ -63,14 +84,14 @@ export class SwitchPagesDirective {
    * @param {number} size
    * @returns {Promise<any>}
    */
-  scrollProcess(direction: boolean = true, size: number = 1) {
+  protected scrollProcess(direction: boolean = true, size: number = 1) {
     return new Promise((resolve, reject) => {
       const scrollSize = direction ?
         this.scrollTop + size * this.el.nativeElement.clientHeight :
         this.scrollTop - size * this.el.nativeElement.clientHeight;
-      TweenMax.to(this.el.nativeElement, 1, {
+      TweenMax.to(this.el.nativeElement, 0.65, {
         scrollTop: scrollSize,
-        ease: Power2.easeInOut,
+        ease: Expo.easeOut,
         onComplete() {
           resolve();
         }

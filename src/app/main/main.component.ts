@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { SwitchPagesDirective } from '../shared/switch-pages/switch-pages.directive';
 
 @Component({
   selector: 'app-main',
@@ -7,13 +7,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  pageIndex = 0;
 
+  focus = false;
   constructor() {
   }
 
-  nextPage() {
-    this.pageIndex = 1;
+  onFocus() {
+    this.focus = true;
+  }
+
+  onBlur() {
+    this.focus = false;
   }
 
   ngOnInit() {

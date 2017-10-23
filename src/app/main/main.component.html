@@ -1,17 +1,17 @@
 <app-main-header></app-main-header>
-<div class="main-content" appSwitchPages [currentIndex]="pageIndex">
-  <div class="page">
+<div class="main-content" appSwitchPages="horizontal" #main="appSwitchPages">
+  <div class="page page_one">
     <div class="content-wrapper">
       <div class="box">
         <h3 class="box-title">我的最佳理财云笔记工具</h3>
-        <form class="form">
+        <form class="form" [class.active]='focus'>
           <div class="form-control">
-            <input type="text">
+            <input type="text" name="join" (focus)="onFocus()" (blur)="onBlur()">
           </div>
           <button mat-button>加入我们</button>
         </form>
       </div>
-      <button mat-icon-button class="next-page" (click)="nextPage()">
+      <button mat-icon-button class="next-page" (click)="main.nextPage()">
         <mat-icon aria-label="下一页" class="white">keyboard_arrow_down</mat-icon>
       </button>
     </div>
@@ -20,17 +20,17 @@
       <video src="../../assets/source/cat.mp4" autoPlay loop muted></video>
     </div>
   </div>
-  <div class="page">
+  <div class="page page_two">
     page 1
   </div>
 
-  <div class="page">
+  <div class="page page_three">
     page 2
   </div>
-  <div class="page">
+  <div class="page page_fore">
     page 3
   </div>
-  <div class="page">
+  <div class="page page_five">
     page 4
   </div>
 </div>
