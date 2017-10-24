@@ -65,7 +65,7 @@ ul{
 }
 
 .horizontal{
-  overflow-x: auto !important;
+  overflow-x: hidden !important;
   align-items: center;
   display: inline-flex;
   flex-wrap: nowrap;

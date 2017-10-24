@@ -12,6 +12,10 @@ import {TweenMax, Power2, Expo} from 'gsap';
 
 const VERTICAL = 'vertical', HORIZONTAL = 'horizontal';
 
+/**
+ * TODO: 滚动, 抓放
+ */
+
 @Directive({selector: '[appSwitchPages]', exportAs: 'appSwitchPages'})
 export class SwitchPagesDirective implements OnInit {
   // 当前 滚轴的Y轴位置
@@ -25,6 +29,7 @@ export class SwitchPagesDirective implements OnInit {
   private endY: number;
 
   down = false;
+  private timer;
   pointStart: MouseEvent;
   pointEnd: MouseEvent;
   // 当前 page下标
@@ -40,10 +45,12 @@ export class SwitchPagesDirective implements OnInit {
    * 下一页
    */
   public nextPage() {
-    this.scrollTo(this.pageIndex + 1);
+    this.scrollTer();
   }
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(private el: ElementRef, private renderer: Renderer2) {
+    this.scrollTop = this.el.nativeElement.scrollTop;
+  }
 
   ngOnInit() {
     switch (this.appSwitchPages) {
@@ -58,7 +65,7 @@ export class SwitchPagesDirective implements OnInit {
         this.renderer.addClass(this.el.nativeElement, VERTICAL);
     }
   }
-  // 方向手势
+  // 方向手势 ${阀值} : 55
   directionPointer (): string {
     if (Math.abs(this.pointEnd.screenX - this.pointStart.screenX) > 55 ||
         Math.abs(this.pointEnd.screenY - this.pointStart.screenY) > 55) {
@@ -78,6 +85,10 @@ export class SwitchPagesDirective implements OnInit {
     }
   }
 
+  /**
+   * 根据传进的方向 做出相应的反应
+   * @param direction right, left, down, up
+   */
   reaction(direction: string) {
     switch (direction) {
       case 'right':
@@ -91,13 +102,13 @@ export class SwitchPagesDirective implements OnInit {
         }
         break;
       case 'down':
-        if (this.appSwitchPages === VERTICAL.toString()) {
+        if (this.appSwitchPages === VERTICAL) {
           this.scrollTer(false);
         }
         break;
       case 'up':
-        if (this.appSwitchPages === VERTICAL.toString()) {
-          this.nextPage();
+        if (this.appSwitchPages === VERTICAL) {
+          this.scrollTer();
         }
         break;
     }
@@ -117,8 +128,13 @@ export class SwitchPagesDirective implements OnInit {
       this.scrollTer();
     } else if (this.scrollTop - this.el.nativeElement.scrollTop > 10) {
       this.scrollTer(false);
-    } else {
-      // TODO: 函数防抖(Debounce) this.scrollTer(true, this.pageIndex);
+    } else if (Math.abs(this.scrollTop - this.el.nativeElement) >= 3 &&
+               Math.abs(this.scrollTop - this.el.nativeElement) <= 10) {
+      // 函数防抖(Debounce) 回归
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        this.scrollTo(this.pageIndex);
+      }, 650);
     }
   }
 
@@ -132,7 +148,6 @@ export class SwitchPagesDirective implements OnInit {
         this.startX = $event.pageX - this.el.nativeElement.offsetLeft;
         this.startY = $event.pageY - this.el.nativeElement.offsetTop;
         this.scrollLeft = this.el.nativeElement.scrollLeft;
-        // console.log(`layer (${$event.layerX}, ${$event.layerY}) , start :(${this.startX} , ${this.startY}) , ${this.scrollLeft}`);
         break;
       case VERTICAL:
         this.pointStart = $event;
@@ -166,11 +181,11 @@ export class SwitchPagesDirective implements OnInit {
     $event.preventDefault();
     switch (this.appSwitchPages) {
       case HORIZONTAL:
-      if (this.down) {
-        const x = $event.pageX - this.el.nativeElement.offsetLeft;
-        const wark = x - this.startX;
-        this.el.nativeElement.scrollLeft = this.scrollLeft - wark;
-      }
+          if (this.down) {
+            const x = $event.pageX - this.el.nativeElement.offsetLeft;
+            const wark = x - this.startX;
+            this.el.nativeElement.scrollLeft = this.scrollLeft - wark;
+          }
         break;
     }
   }
@@ -182,9 +197,7 @@ export class SwitchPagesDirective implements OnInit {
    */
   protected scrollTer(direction: boolean = true, size: number = 1) {
     this.running = true;
-    this
-      .scrollProcess(direction, size)
-      .then(() => {
+    this.scrollProcess(direction, size).then(() => {
         this.pageIndex = direction ? (this.pageIndex + size) : (this.pageIndex - size);
         this.pageIndexChange.emit(this.pageIndex);
         this.scrollTop = this.el.nativeElement.scrollTop;
@@ -218,8 +231,8 @@ export class SwitchPagesDirective implements OnInit {
    * @param {number} index
    */
   public scrollTo(index: number) {
-    (index - this.pageIndex) > 0
-      ? this.scrollTer(true, index - this.pageIndex)
-      : this.scrollTer(false, this.pageIndex - index);
+    (index - this.pageIndex) > 0 ?
+    this.scrollTer(true, index - this.pageIndex) :
+    this.scrollTer(false, this.pageIndex - index);
   }
 }
