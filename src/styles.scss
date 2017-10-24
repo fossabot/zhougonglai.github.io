@@ -55,10 +55,19 @@ ul{
   }
 }
 
+.drag {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+}
+
 .vertical{
   overflow-y: auto !important;
 }
 
 .horizontal{
   overflow-x: auto !important;
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  cursor: pointer;
 }
