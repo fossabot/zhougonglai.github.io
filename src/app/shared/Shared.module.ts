@@ -9,7 +9,7 @@ import {
   CovalentCommonModule, CovalentDialogsModule,
 } from '@covalent/core';
 import {
-  MatButtonModule, MatToolbarModule,
+  MatButtonModule, MatToolbarModule, MatCardModule,
   CompatibilityModule, MatIconModule,
 } from '@angular/material';
 import { MainHeaderComponent } from './main-header';
@@ -31,7 +31,8 @@ const COVALENT_MODULES: any[] = [
 ];
 
 const MATERIAL_MODULES: any[] = [
-  MatButtonModule, CompatibilityModule, MatToolbarModule, MatIconModule
+  MatButtonModule, CompatibilityModule, MatToolbarModule, MatIconModule,
+  MatCardModule
 ];
 
 @NgModule({
