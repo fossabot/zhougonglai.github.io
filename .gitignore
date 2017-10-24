@@ -5,6 +5,7 @@
 /out-tsc
 /e2e
 /src
+!./*.js
 
 # dependencies
 /node_modules
