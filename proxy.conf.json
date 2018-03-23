@@ -1,6 +1,0 @@
-{
-  "/api/v1": {
-    "target": "https://www.cnodejs.org/",
-    "secure": false
-  }
-}

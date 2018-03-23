@@ -1,0 +1,68 @@
+{
+  "name": "Teacher-Landi",
+  "short_name": "Landi",
+  "start_url": "/?utm_source=homescreen",
+  "display": "standalone",
+  "theme_color": "#00BCD4",
+  "background_color": "#fff",
+  "description": "Landi For Teachers",
+  "orientation": "portrait-primary",
+  "lang": "en-US",
+  "default_locale": "en",
+  "developer":{
+    "name": "Landi 科技",
+    "url": "https://www.landi.com"
+  },
+  "icons": [
+    {
+      "src": "images/touch/Icon-Small.png",
+      "sizes": "29x29",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Icon-Spotlight-40.png",
+      "sizes": "40x40",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Icon-Small-50.png",
+      "sizes": "50x50",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Icon.png",
+      "sizes": "57x57",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Icon-60.png",
+      "sizes": "60x60",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Icon-76.png",
+      "sizes": "76x76",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Platform.png",
+      "sizes": "108x108",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Icon-Spotlight-40@3x.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "images/touch/Icon-iPadPro@2x.png",
+      "sizes": "167x167",
+      "type": "image/png"
+    }
+  ]
+}
