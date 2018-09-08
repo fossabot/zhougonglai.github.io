@@ -11,11 +11,11 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("http://pdw9699pn.bkt.clouddn.com/production/workbox-v3.4.1/workbox-sw.js");
-workbox.setConfig({modulePathPrefix: "http://pdw9699pn.bkt.clouddn.com/production/workbox-v3.4.1"});
+importScripts("/workbox-v3.4.1/workbox-sw.js");
+workbox.setConfig({modulePathPrefix: "/workbox-v3.4.1"});
 
 importScripts(
-  "http://pdw9699pn.bkt.clouddn.com/production/precache-manifest.bf7280768345b1a8b836db9c7d72d1b0.js"
+  "/precache-manifest.56446c45329a5a8886b6ef58d5ee118e.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "landi_ui"});
