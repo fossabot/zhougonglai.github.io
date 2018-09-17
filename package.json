@@ -8,7 +8,6 @@
     "build": "vue-cli-service build",
     "release": "NODE_ENV=release vue-cli-service build",
     "publish": "node publish.js",
-    "commit": "node pushcode.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 import 'whatwg-fetch'
 import * as qiniu from 'qiniu-js'
-import {time} from 'vue-analytics'
+import {time, exception} from 'vue-analytics'
 
 /**
  *  @author john
@@ -10,8 +10,16 @@ import {time} from 'vue-analytics'
  /**
   * @desc get请求序列化
   */
-export const queryString = query => (typeof query === 'object') ? '?' + Object.keys(query).map(param => `${param}=${encodeURIComponent(query[param])}`).join('&'): ''
-export const searchParams = query => (typeof query === 'object') ?'?' + new URLSearchParams(query).toString() : ''
+export const queryString = query => {
+  return (typeof query === 'object')
+    ? ('?' + Object.keys(query).map(param => `${param}=${encodeURIComponent(query[param])}`).join('&'))
+    : ''
+}
+export const searchParams = query => {
+  return (typeof query === 'object')
+    ? `?${new URLSearchParams(query).toString()}`
+    : ''
+}
 
 const abortableFetch = ('signal' in new Request('')) ? window.fetch : fetch
 
@@ -32,7 +40,7 @@ export const $fetch = {
         credentials: process.env.NODE_ENV === 'release' ? 'include': 'same-origin'
     }).then(res => res.json())
     .catch((ex) =>{
-      this.$ga.exception(ex.message || ex);
+      exception(ex);
       if(ex.name === 'AbortError') {
         console.log('request aborted')
       }
@@ -43,7 +51,7 @@ export const $fetch = {
         credentials: process.env.NODE_ENV === 'release' ? 'include': 'same-origin'
     }).then(res => res.json())
     .catch((ex) =>{
-      this.$ga.exception(ex.message || ex)
+      exception(ex)
       if (ex.name === 'AbortError') {
         console.log('request aborted')
       }
