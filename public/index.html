@@ -1,15 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html prefix="og:http://ogp.me/ns#">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta property="og:title" content="代码实验室" />
+    <meta property="og:description" content="实验性代码" />
+    <meta property="og:url" content="https://zhougonglai.github.io" />
+    <meta property="og:img" content="https://zhougonglai.github.io/v2-56d19940003764065522a613b051d508_1200x500" />
+    <meta name="google-signin-client_id" content="752477753928-an54p5b2phmnir9c25qfntum1tt20v86.apps.googleusercontent.com">
+    <meta name="google-signin-cookiepolicy" content="single_host_origin">
+    <meta name="google-signin-scope" content="profile email">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+    <% if(process.env.NODE_ENV === 'production') {%>
+    <script src='https://www.google.com/recaptcha/api.js?render=6LejNG8UAAAAAC2CvcJuCW6b-nEzkKM9OIn_nnJl'></script>
+    <% } %>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <script src="https://at.alicdn.com/t/font_544405_avyexo4myj.js" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>landi_ui</title>
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '263543064265851',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v3.1'
+          });
+          FB.AppEvents.logPageView();
+        };
+        (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "https://connect.facebook.net/en_US/sdk/debug.js";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+      </script>
   </head>
   <body>
+    <!-- <div id="fb-root"></div> -->
     <noscript>
-      <strong>We're sorry but landi_ui doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>
+        We're sorry but landi_ui doesn't work properly without JavaScript enabled. Please enable it to continue.
+      </strong>
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->

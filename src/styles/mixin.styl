@@ -1,0 +1,4 @@
+bg-image($url, $ext = ".png")
+  background-image: url($url + $ext)
+  @media (min-resolution: 2dppx)
+    background-image: url($url + "@2x" + $ext)

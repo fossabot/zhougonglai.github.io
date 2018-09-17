@@ -1,0 +1,61 @@
+@import '~vuetify/src/stylus/main'
+@import './styles/val'
+
+button
+  outline 0
+.text-center
+  text-align: center
+.flex-center
+  display: flex
+  align-items: center
+  justify-content: center
+.theme--light.v-input:not(.v-input--is-disabled) input,
+.theme--light.v-input:not(.v-input--is-disabled) textarea
+  color inherit
+.v-messages__message
+  font-size medium
+.icon
+  width: 1em; height: 1em
+  vertical-align: -0.15em
+  fill: currentColor
+  overflow: hidden
+
+.border-top-1px, .border-right-1px, .border-bottom-1px, .border-left-1px
+  position: relative
+  &::before, &::after
+    content: ""
+    display: block
+    position: absolute
+    transform-origin: 0 0
+
+.border-top-1px
+  &::before
+    border-top: 1PX solid $color-row-line
+    left: 0
+    top: 0
+    width: 100%
+    transform-origin: 0 top
+
+.border-right-1px
+  &::after
+    border-right: 1PX solid $color-col-line
+    top: 0
+    right: 0
+    height: 100%
+    transform-origin: right 0
+
+.border-bottom-1px
+  &::after
+    border-bottom: 1PX solid $color-row-line
+    left: 0
+    bottom: 0
+    width: 100%
+    transform-origin: 0 bottom
+
+.border-left-1px
+  &::before
+    border-left: 1PX solid $color-col-line
+    top: 0
+    left: 0
+    height: 100%
+    transform-origin: left 0
