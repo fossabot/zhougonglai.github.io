@@ -40,7 +40,7 @@ this.workbox.core = (function () {
   'use strict';
 
   try {
-    self.workbox.v['workbox:core:3.4.1'] = 1;
+    self.workbox.v['workbox:core:3.5.0'] = 1;
   } catch (e) {} // eslint-disable-line
 
   /*
@@ -80,6 +80,84 @@ this.workbox.core = (function () {
     error: 3,
     silent: 4
   };
+
+  /*
+    Copyright 2017 Google Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  */
+
+  // Safari doesn't print all console.groupCollapsed() arguments.
+  // Related bug: https://bugs.webkit.org/show_bug.cgi?id=182754
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+  const GREY = `#7f8c8d`;
+  const GREEN = `#2ecc71`;
+  const YELLOW = `#f39c12`;
+  const RED = `#c0392b`;
+  const BLUE = `#3498db`;
+
+  const getDefaultLogLevel = () => LOG_LEVELS.log;
+
+  let logLevel = getDefaultLogLevel();
+  const shouldPrint = minLevel => logLevel <= minLevel;
+  const setLoggerLevel = newLogLevel => logLevel = newLogLevel;
+  const getLoggerLevel = () => logLevel;
+
+  // We always want groups to be logged unless logLevel is silent.
+  const groupLevel = LOG_LEVELS.error;
+
+  const _print = function (keyName, logArgs, levelColor) {
+    const logLevel = keyName.indexOf('group') === 0 ? groupLevel : LOG_LEVELS[keyName];
+    if (!shouldPrint(logLevel)) {
+      return;
+    }
+
+    if (!levelColor || keyName === 'groupCollapsed' && isSafari) {
+      console[keyName](...logArgs);
+      return;
+    }
+
+    const logPrefix = ['%cworkbox', `background: ${levelColor}; color: white; padding: 2px 0.5em; ` + `border-radius: 0.5em;`];
+    console[keyName](...logPrefix, ...logArgs);
+  };
+
+  const groupEnd = () => {
+    if (shouldPrint(groupLevel)) {
+      console.groupEnd();
+    }
+  };
+
+  const defaultExport = {
+    groupEnd,
+    unprefixed: {
+      groupEnd
+    }
+  };
+
+  const setupLogs = (keyName, color) => {
+    defaultExport[keyName] = (...args) => _print(keyName, args, color);
+    defaultExport.unprefixed[keyName] = (...args) => _print(keyName, args);
+  };
+
+  const levelToColor = {
+    debug: GREY,
+    log: GREEN,
+    warn: YELLOW,
+    error: RED,
+    groupCollapsed: BLUE
+  };
+  Object.keys(levelToColor).forEach(keyName => setupLogs(keyName, levelToColor[keyName]));
 
   /*
     Copyright 2017 Google Inc.
@@ -351,131 +429,6 @@ this.workbox.core = (function () {
     limitations under the License.
   */
 
-  const _cacheNameDetails = {
-    prefix: 'workbox',
-    suffix: self.registration.scope,
-    googleAnalytics: 'googleAnalytics',
-    precache: 'precache',
-    runtime: 'runtime'
-  };
-
-  const _createCacheName = cacheName => {
-    return [_cacheNameDetails.prefix, cacheName, _cacheNameDetails.suffix].filter(value => value.length > 0).join('-');
-  };
-
-  const cacheNames = {
-    updateDetails: details => {
-      Object.keys(_cacheNameDetails).forEach(key => {
-        if (typeof details[key] !== 'undefined') {
-          _cacheNameDetails[key] = details[key];
-        }
-      });
-    },
-    getGoogleAnalyticsName: userCacheName => {
-      return userCacheName || _createCacheName(_cacheNameDetails.googleAnalytics);
-    },
-    getPrecacheName: userCacheName => {
-      return userCacheName || _createCacheName(_cacheNameDetails.precache);
-    },
-    getRuntimeName: userCacheName => {
-      return userCacheName || _createCacheName(_cacheNameDetails.runtime);
-    }
-  };
-
-  /*
-    Copyright 2017 Google Inc.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  */
-
-  // Safari doesn't print all console.groupCollapsed() arguments.
-  // Related bug: https://bugs.webkit.org/show_bug.cgi?id=182754
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-  const GREY = `#7f8c8d`;
-  const GREEN = `#2ecc71`;
-  const YELLOW = `#f39c12`;
-  const RED = `#c0392b`;
-  const BLUE = `#3498db`;
-
-  const getDefaultLogLevel = () => LOG_LEVELS.log;
-
-  let logLevel = getDefaultLogLevel();
-  const shouldPrint = minLevel => logLevel <= minLevel;
-  const setLoggerLevel = newLogLevel => logLevel = newLogLevel;
-  const getLoggerLevel = () => logLevel;
-
-  // We always want groups to be logged unless logLevel is silent.
-  const groupLevel = LOG_LEVELS.error;
-
-  const _print = function (keyName, logArgs, levelColor) {
-    const logLevel = keyName.indexOf('group') === 0 ? groupLevel : LOG_LEVELS[keyName];
-    if (!shouldPrint(logLevel)) {
-      return;
-    }
-
-    if (!levelColor || keyName === 'groupCollapsed' && isSafari) {
-      console[keyName](...logArgs);
-      return;
-    }
-
-    const logPrefix = ['%cworkbox', `background: ${levelColor}; color: white; padding: 2px 0.5em; ` + `border-radius: 0.5em;`];
-    console[keyName](...logPrefix, ...logArgs);
-  };
-
-  const groupEnd = () => {
-    if (shouldPrint(groupLevel)) {
-      console.groupEnd();
-    }
-  };
-
-  const defaultExport = {
-    groupEnd,
-    unprefixed: {
-      groupEnd
-    }
-  };
-
-  const setupLogs = (keyName, color) => {
-    defaultExport[keyName] = (...args) => _print(keyName, args, color);
-    defaultExport.unprefixed[keyName] = (...args) => _print(keyName, args);
-  };
-
-  const levelToColor = {
-    debug: GREY,
-    log: GREEN,
-    warn: YELLOW,
-    error: RED,
-    groupCollapsed: BLUE
-  };
-  Object.keys(levelToColor).forEach(keyName => setupLogs(keyName, levelToColor[keyName]));
-
-  /*
-    Copyright 2017 Google Inc.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  */
-
   /*
    * This method returns true if the current context is a service worker.
    */
@@ -561,256 +514,60 @@ this.workbox.core = (function () {
     isArrayOfClass
   };
 
-  /*
-    Copyright 2017 Google Inc.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  */
-
   /**
-   * Logs a warning to the user recommending changing
-   * to max-age=0 or no-cache.
-   *
-   * @param {string} cacheControlHeader
-   *
-   * @private
-   */
-  function showWarning(cacheControlHeader) {
-    const docsUrl = 'https://developers.google.com/web/tools/workbox/guides/service-worker-checklist#cache-control_of_your_service_worker_file';
-    defaultExport.warn(`You are setting a 'cache-control' header of ` + `'${cacheControlHeader}' on your service worker file. This should be ` + `set to 'max-age=0' or 'no-cache' to ensure the latest service worker ` + `is served to your users. Learn more here: ${docsUrl}`);
-  }
-
-  /**
-   * Checks for cache-control header on SW file and
-   * warns the developer if it exists with a value
-   * other than max-age=0 or no-cache.
-   *
-   * @return {Promise}
-   * @private
-   */
-  function checkSWFileCacheHeaders() {
-    // This is wrapped as an iife to allow async/await while making
-    //  rollup exclude it in builds.
-    return babelHelpers.asyncToGenerator(function* () {
-      try {
-        const swFile = self.location.href;
-        const response = yield fetch(swFile);
-        if (!response.ok) {
-          // Response failed so nothing we can check;
-          return;
-        }
-
-        if (!response.headers.has('cache-control')) {
-          // No cache control header.
-          return;
-        }
-
-        const cacheControlHeader = response.headers.get('cache-control');
-        const maxAgeResult = /max-age\s*=\s*(\d*)/g.exec(cacheControlHeader);
-        if (maxAgeResult) {
-          if (parseInt(maxAgeResult[1], 10) === 0) {
-            return;
-          }
-        }
-
-        if (cacheControlHeader.indexOf('no-cache') !== -1) {
-          return;
-        }
-
-        if (cacheControlHeader.indexOf('no-store') !== -1) {
-          return;
-        }
-
-        showWarning(cacheControlHeader);
-      } catch (err) {
-        // NOOP
-      }
-    })();
-  }
-
-  const finalCheckSWFileCacheHeaders = checkSWFileCacheHeaders;
-
-  /*
-    Copyright 2017 Google Inc.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  */
-
-  /**
-   * This class is never exposed publicly. Inidividual methods are exposed
-   * using jsdoc alias commands.
+   * Runs all of the callback functions, one at a time sequentially, in the order
+   * in which they were registered.
    *
    * @memberof workbox.core
    * @private
    */
-  class WorkboxCore {
-    /**
-     * You should not instantiate this object directly.
-     *
-     * @private
-     */
-    constructor() {
-      // Give our version strings something to hang off of.
-      try {
-        self.workbox.v = self.workbox.v || {};
-      } catch (err) {}
-      // NOOP
-
-
-      // A WorkboxCore instance must be exported before we can use the logger.
-      // This is so it can get the current log level.
+  let executeQuotaErrorCallbacks = (() => {
+    var _ref = babelHelpers.asyncToGenerator(function* () {
       {
-        const padding = '   ';
-        defaultExport.groupCollapsed('Welcome to Workbox!');
-        defaultExport.unprefixed.log(`You are currently using a development build. ` + `By default this will switch to prod builds when not on localhost. ` + `You can force this with workbox.setConfig({debug: true|false}).`);
-        defaultExport.unprefixed.log(`📖 Read the guides and documentation\n` + `${padding}https://developers.google.com/web/tools/workbox/`);
-        defaultExport.unprefixed.log(`❓ Use the [workbox] tag on Stack Overflow to ask questions\n` + `${padding}https://stackoverflow.com/questions/ask?tags=workbox`);
-        defaultExport.unprefixed.log(`🐛 Found a bug? Report it on GitHub\n` + `${padding}https://github.com/GoogleChrome/workbox/issues/new`);
-        defaultExport.groupEnd();
+        defaultExport.log(`About to run ${callbacks.size} callbacks to clean up caches.`);
+      }
 
-        if (typeof finalCheckSWFileCacheHeaders === 'function') {
-          finalCheckSWFileCacheHeaders();
+      for (const callback of callbacks) {
+        yield callback();
+        {
+          defaultExport.log(callback, 'is complete.');
         }
       }
-    }
 
-    /**
-     * Get the current cache names used by Workbox.
-     *
-     * `cacheNames.precache` is used for precached assets,
-     * `cacheNames.googleAnalytics` is used by `workbox-google-analytics` to
-     * store `analytics.js`,
-     * and `cacheNames.runtime` is used for everything else.
-     *
-     * @return {Object} An object with `precache` and `runtime` cache names.
-     *
-     * @alias workbox.core.cacheNames
-     */
-    get cacheNames() {
-      return {
-        googleAnalytics: cacheNames.getGoogleAnalyticsName(),
-        precache: cacheNames.getPrecacheName(),
-        runtime: cacheNames.getRuntimeName()
-      };
-    }
-
-    /**
-     * You can alter the default cache names used by the Workbox modules by
-     * changing the cache name details.
-     *
-     * Cache names are generated as `<prefix>-<Cache Name>-<suffix>`.
-     *
-     * @param {Object} details
-     * @param {Object} details.prefix The string to add to the beginning of
-     * the precache and runtime cache names.
-     * @param {Object} details.suffix The string to add to the end of
-     * the precache and runtime cache names.
-     * @param {Object} details.precache The cache name to use for precache
-     * caching.
-     * @param {Object} details.runtime The cache name to use for runtime caching.
-     * @param {Object} details.googleAnalytics The cache name to use for
-     * `workbox-google-analytics` caching.
-     *
-     * @alias workbox.core.setCacheNameDetails
-     */
-    setCacheNameDetails(details) {
       {
-        Object.keys(details).forEach(key => {
-          finalAssertExports.isType(details[key], 'string', {
-            moduleName: 'workbox-core',
-            className: 'WorkboxCore',
-            funcName: 'setCacheNameDetails',
-            paramName: `details.${key}`
-          });
-        });
-
-        if ('precache' in details && details.precache.length === 0) {
-          throw new WorkboxError('invalid-cache-name', {
-            cacheNameId: 'precache',
-            value: details.precache
-          });
-        }
-
-        if ('runtime' in details && details.runtime.length === 0) {
-          throw new WorkboxError('invalid-cache-name', {
-            cacheNameId: 'runtime',
-            value: details.runtime
-          });
-        }
-
-        if ('googleAnalytics' in details && details.googleAnalytics.length === 0) {
-          throw new WorkboxError('invalid-cache-name', {
-            cacheNameId: 'googleAnalytics',
-            value: details.googleAnalytics
-          });
-        }
+        defaultExport.log('Finished running callbacks.');
       }
+    });
 
-      cacheNames.updateDetails(details);
+    return function executeQuotaErrorCallbacks() {
+      return _ref.apply(this, arguments);
+    };
+  })();
+
+  const callbacks = new Set();
+
+  /**
+   * Adds a function to the set of callbacks that will be executed when there's
+   * a quota error.
+   *
+   * @param {Function} callback
+   * @memberof workbox.core
+   */
+  function registerQuotaErrorCallback(callback) {
+    {
+      finalAssertExports.isType(callback, 'function', {
+        moduleName: 'workbox-core',
+        funcName: 'register',
+        paramName: 'callback'
+      });
     }
 
-    /**
-     * Get the current log level.
-     *
-     * @return {number}.
-     *
-     * @alias workbox.core.logLevel
-     */
-    get logLevel() {
-      return getLoggerLevel();
-    }
+    callbacks.add(callback);
 
-    /**
-     * Set the current log level passing in one of the values from
-     * [LOG_LEVELS]{@link module:workbox-core.LOG_LEVELS}.
-     *
-     * @param {number} newLevel The new log level to use.
-     *
-     * @alias workbox.core.setLogLevel
-     */
-    setLogLevel(newLevel) {
-      {
-        finalAssertExports.isType(newLevel, 'number', {
-          moduleName: 'workbox-core',
-          className: 'WorkboxCore',
-          funcName: 'logLevel [setter]',
-          paramName: `logLevel`
-        });
-      }
-
-      if (newLevel > LOG_LEVELS.silent || newLevel < LOG_LEVELS.debug) {
-        throw new WorkboxError('invalid-value', {
-          paramName: 'logLevel',
-          validValueDescription: `Please use a value from LOG_LEVELS, i.e ` + `'logLevel = workbox.core.LOG_LEVELS.debug'.`,
-          value: newLevel
-        });
-      }
-
-      setLoggerLevel(newLevel);
+    {
+      defaultExport.log('Registered a callback to respond to quota errors.', callback);
     }
   }
-
-  var defaultExport$1 = new WorkboxCore();
 
   /*
     Copyright 2017 Google Inc.
@@ -1206,6 +963,53 @@ this.workbox.core = (function () {
     limitations under the License.
   */
 
+  const _cacheNameDetails = {
+    prefix: 'workbox',
+    suffix: self.registration.scope,
+    googleAnalytics: 'googleAnalytics',
+    precache: 'precache',
+    runtime: 'runtime'
+  };
+
+  const _createCacheName = cacheName => {
+    return [_cacheNameDetails.prefix, cacheName, _cacheNameDetails.suffix].filter(value => value.length > 0).join('-');
+  };
+
+  const cacheNames = {
+    updateDetails: details => {
+      Object.keys(_cacheNameDetails).forEach(key => {
+        if (typeof details[key] !== 'undefined') {
+          _cacheNameDetails[key] = details[key];
+        }
+      });
+    },
+    getGoogleAnalyticsName: userCacheName => {
+      return userCacheName || _createCacheName(_cacheNameDetails.googleAnalytics);
+    },
+    getPrecacheName: userCacheName => {
+      return userCacheName || _createCacheName(_cacheNameDetails.precache);
+    },
+    getRuntimeName: userCacheName => {
+      return userCacheName || _createCacheName(_cacheNameDetails.runtime);
+    }
+  };
+
+  /*
+    Copyright 2017 Google Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  */
+
   var pluginEvents = {
     CACHE_DID_UPDATE: 'cacheDidUpdate',
     CACHE_WILL_UPDATE: 'cacheWillUpdate',
@@ -1235,61 +1039,6 @@ this.workbox.core = (function () {
       return plugins.filter(plugin => callbackname in plugin);
     }
   };
-
-  /**
-   * Runs all of the callback functions, one at a time sequentially, in the order
-   * in which they were registered.
-   *
-   * @memberof workbox.core
-   * @private
-   */
-  let executeQuotaErrorCallbacks = (() => {
-    var _ref = babelHelpers.asyncToGenerator(function* () {
-      {
-        defaultExport.log(`About to run ${callbacks.size} callbacks to clean up caches.`);
-      }
-
-      for (const callback of callbacks) {
-        yield callback();
-        {
-          defaultExport.log(callback, 'is complete.');
-        }
-      }
-
-      {
-        defaultExport.log('Finished running callbacks.');
-      }
-    });
-
-    return function executeQuotaErrorCallbacks() {
-      return _ref.apply(this, arguments);
-    };
-  })();
-
-  const callbacks = new Set();
-
-  /**
-   * Adds a function to the set of callbacks that will be executed when there's
-   * a quota error.
-   *
-   * @param {Function} callback
-   * @memberof workbox.core
-   */
-  function registerQuotaErrorCallback(callback) {
-    {
-      finalAssertExports.isType(callback, 'function', {
-        moduleName: 'workbox-core',
-        funcName: 'register',
-        paramName: 'callback'
-      });
-    }
-
-    callbacks.add(callback);
-
-    {
-      defaultExport.log('Registered a callback to respond to quota errors.', callback);
-    }
-  }
 
   /*
     Copyright 2017 Google Inc.
@@ -1677,8 +1426,7 @@ this.workbox.core = (function () {
     cacheWrapper: cacheWrapper,
     fetchWrapper: fetchWrapper,
     getFriendlyURL: getFriendlyURL,
-    logger: defaultExport,
-    registerQuotaErrorCallback: registerQuotaErrorCallback
+    logger: defaultExport
   });
 
   /*
@@ -1697,9 +1445,261 @@ this.workbox.core = (function () {
     limitations under the License.
   */
 
+  /**
+   * Logs a warning to the user recommending changing
+   * to max-age=0 or no-cache.
+   *
+   * @param {string} cacheControlHeader
+   *
+   * @private
+   */
+  function showWarning(cacheControlHeader) {
+    const docsUrl = 'https://developers.google.com/web/tools/workbox/guides/service-worker-checklist#cache-control_of_your_service_worker_file';
+    defaultExport.warn(`You are setting a 'cache-control' header of ` + `'${cacheControlHeader}' on your service worker file. This should be ` + `set to 'max-age=0' or 'no-cache' to ensure the latest service worker ` + `is served to your users. Learn more here: ${docsUrl}`);
+  }
+
+  /**
+   * Checks for cache-control header on SW file and
+   * warns the developer if it exists with a value
+   * other than max-age=0 or no-cache.
+   *
+   * @return {Promise}
+   * @private
+   */
+  function checkSWFileCacheHeaders() {
+    // This is wrapped as an iife to allow async/await while making
+    //  rollup exclude it in builds.
+    return babelHelpers.asyncToGenerator(function* () {
+      try {
+        const swFile = self.location.href;
+        const response = yield fetch(swFile);
+        if (!response.ok) {
+          // Response failed so nothing we can check;
+          return;
+        }
+
+        if (!response.headers.has('cache-control')) {
+          // No cache control header.
+          return;
+        }
+
+        const cacheControlHeader = response.headers.get('cache-control');
+        const maxAgeResult = /max-age\s*=\s*(\d*)/g.exec(cacheControlHeader);
+        if (maxAgeResult) {
+          if (parseInt(maxAgeResult[1], 10) === 0) {
+            return;
+          }
+        }
+
+        if (cacheControlHeader.indexOf('no-cache') !== -1) {
+          return;
+        }
+
+        if (cacheControlHeader.indexOf('no-store') !== -1) {
+          return;
+        }
+
+        showWarning(cacheControlHeader);
+      } catch (err) {
+        // NOOP
+      }
+    })();
+  }
+
+  const finalCheckSWFileCacheHeaders = checkSWFileCacheHeaders;
+
+  /*
+    Copyright 2017 Google Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  */
+
+  /**
+   * This class is never exposed publicly. Inidividual methods are exposed
+   * using jsdoc alias commands.
+   *
+   * @memberof workbox.core
+   * @private
+   */
+  class WorkboxCore {
+    /**
+     * You should not instantiate this object directly.
+     *
+     * @private
+     */
+    constructor() {
+      // Give our version strings something to hang off of.
+      try {
+        self.workbox.v = self.workbox.v || {};
+      } catch (err) {}
+      // NOOP
+
+
+      // A WorkboxCore instance must be exported before we can use the logger.
+      // This is so it can get the current log level.
+      {
+        const padding = '   ';
+        defaultExport.groupCollapsed('Welcome to Workbox!');
+        defaultExport.unprefixed.log(`You are currently using a development build. ` + `By default this will switch to prod builds when not on localhost. ` + `You can force this with workbox.setConfig({debug: true|false}).`);
+        defaultExport.unprefixed.log(`📖 Read the guides and documentation\n` + `${padding}https://developers.google.com/web/tools/workbox/`);
+        defaultExport.unprefixed.log(`❓ Use the [workbox] tag on Stack Overflow to ask questions\n` + `${padding}https://stackoverflow.com/questions/ask?tags=workbox`);
+        defaultExport.unprefixed.log(`🐛 Found a bug? Report it on GitHub\n` + `${padding}https://github.com/GoogleChrome/workbox/issues/new`);
+        defaultExport.groupEnd();
+
+        if (typeof finalCheckSWFileCacheHeaders === 'function') {
+          finalCheckSWFileCacheHeaders();
+        }
+      }
+    }
+
+    /**
+     * Get the current cache names used by Workbox.
+     *
+     * `cacheNames.precache` is used for precached assets,
+     * `cacheNames.googleAnalytics` is used by `workbox-google-analytics` to
+     * store `analytics.js`,
+     * and `cacheNames.runtime` is used for everything else.
+     *
+     * @return {Object} An object with `precache` and `runtime` cache names.
+     *
+     * @alias workbox.core.cacheNames
+     */
+    get cacheNames() {
+      return {
+        googleAnalytics: cacheNames.getGoogleAnalyticsName(),
+        precache: cacheNames.getPrecacheName(),
+        runtime: cacheNames.getRuntimeName()
+      };
+    }
+
+    /**
+     * You can alter the default cache names used by the Workbox modules by
+     * changing the cache name details.
+     *
+     * Cache names are generated as `<prefix>-<Cache Name>-<suffix>`.
+     *
+     * @param {Object} details
+     * @param {Object} details.prefix The string to add to the beginning of
+     * the precache and runtime cache names.
+     * @param {Object} details.suffix The string to add to the end of
+     * the precache and runtime cache names.
+     * @param {Object} details.precache The cache name to use for precache
+     * caching.
+     * @param {Object} details.runtime The cache name to use for runtime caching.
+     * @param {Object} details.googleAnalytics The cache name to use for
+     * `workbox-google-analytics` caching.
+     *
+     * @alias workbox.core.setCacheNameDetails
+     */
+    setCacheNameDetails(details) {
+      {
+        Object.keys(details).forEach(key => {
+          finalAssertExports.isType(details[key], 'string', {
+            moduleName: 'workbox-core',
+            className: 'WorkboxCore',
+            funcName: 'setCacheNameDetails',
+            paramName: `details.${key}`
+          });
+        });
+
+        if ('precache' in details && details.precache.length === 0) {
+          throw new WorkboxError('invalid-cache-name', {
+            cacheNameId: 'precache',
+            value: details.precache
+          });
+        }
+
+        if ('runtime' in details && details.runtime.length === 0) {
+          throw new WorkboxError('invalid-cache-name', {
+            cacheNameId: 'runtime',
+            value: details.runtime
+          });
+        }
+
+        if ('googleAnalytics' in details && details.googleAnalytics.length === 0) {
+          throw new WorkboxError('invalid-cache-name', {
+            cacheNameId: 'googleAnalytics',
+            value: details.googleAnalytics
+          });
+        }
+      }
+
+      cacheNames.updateDetails(details);
+    }
+
+    /**
+     * Get the current log level.
+     *
+     * @return {number}.
+     *
+     * @alias workbox.core.logLevel
+     */
+    get logLevel() {
+      return getLoggerLevel();
+    }
+
+    /**
+     * Set the current log level passing in one of the values from
+     * [LOG_LEVELS]{@link module:workbox-core.LOG_LEVELS}.
+     *
+     * @param {number} newLevel The new log level to use.
+     *
+     * @alias workbox.core.setLogLevel
+     */
+    setLogLevel(newLevel) {
+      {
+        finalAssertExports.isType(newLevel, 'number', {
+          moduleName: 'workbox-core',
+          className: 'WorkboxCore',
+          funcName: 'logLevel [setter]',
+          paramName: `logLevel`
+        });
+      }
+
+      if (newLevel > LOG_LEVELS.silent || newLevel < LOG_LEVELS.debug) {
+        throw new WorkboxError('invalid-value', {
+          paramName: 'logLevel',
+          validValueDescription: `Please use a value from LOG_LEVELS, i.e ` + `'logLevel = workbox.core.LOG_LEVELS.debug'.`,
+          value: newLevel
+        });
+      }
+
+      setLoggerLevel(newLevel);
+    }
+  }
+
+  var defaultExport$1 = new WorkboxCore();
+
+  /*
+    Copyright 2017 Google Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  */
+
   const finalExports = Object.assign(defaultExport$1, {
+    _private,
     LOG_LEVELS,
-    _private
+    registerQuotaErrorCallback
   });
 
   return finalExports;

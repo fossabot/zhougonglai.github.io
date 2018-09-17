@@ -11,11 +11,11 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("/workbox-v3.4.1/workbox-sw.js");
-workbox.setConfig({modulePathPrefix: "/workbox-v3.4.1"});
+importScripts("/workbox-v3.5.0/workbox-sw.js");
+workbox.setConfig({modulePathPrefix: "/workbox-v3.5.0"});
 
 importScripts(
-  "/precache-manifest.f403f59769172ddc3c1a7276b817c58e.js"
+  "/precache-manifest.6a732a3241a7d4d4297eaa1a25d8d485.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "landi_ui"});

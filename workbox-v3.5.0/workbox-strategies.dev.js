@@ -3,7 +3,7 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
   'use strict';
 
   try {
-    self.workbox.v['workbox:strategies:3.4.1'] = 1;
+    self.workbox.v['workbox:strategies:3.5.0'] = 1;
   } catch (e) {} // eslint-disable-line
 
   /*
@@ -1035,27 +1035,32 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
 
   /**
    * @function workbox.strategies.cacheFirst
-   * @param {workbox.strategies.StrategyOptions} options
+   * @param {Object} options See the {@link workbox.strategies.CacheFirst}
+   * constructor for more info.
    */
 
   /**
    * @function workbox.strategies.cacheOnly
-   * @param {workbox.strategies.StrategyOptions} options
+   * @param {Object} options See the {@link workbox.strategies.CacheOnly}
+   * constructor for more info.
    */
 
   /**
    * @function workbox.strategies.networkFirst
-   * @param {workbox.strategies.StrategyOptions} options
+   * @param {Object} options See the {@link workbox.strategies.NetworkFirst}
+   * constructor for more info.
    */
 
   /**
    * @function workbox.strategies.networkOnly
-   * @param {workbox.strategies.StrategyOptions} options
+   * @param {Object} options See the {@link workbox.strategies.NetworkOnly}
+   * constructor for more info.
    */
 
   /**
    * @function workbox.strategies.staleWhileRevalidate
-   * @param {workbox.strategies.StrategyOptions} options
+   * @param {Object} options See the
+   * {@link workbox.strategies.StaleWhileRevalidate} constructor for more info.
    */
 
   const mapping = {

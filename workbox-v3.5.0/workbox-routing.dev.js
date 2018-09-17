@@ -3,7 +3,7 @@ this.workbox.routing = (function (assert_mjs,logger_mjs,WorkboxError_mjs,getFrie
   'use strict';
 
   try {
-    self.workbox.v['workbox:routing:3.4.1'] = 1;
+    self.workbox.v['workbox:routing:3.5.0'] = 1;
   } catch (e) {} // eslint-disable-line
 
   /*
@@ -38,7 +38,7 @@ this.workbox.routing = (function (assert_mjs,logger_mjs,WorkboxError_mjs,getFrie
    *
    * @private
    */
-  const validMethods = ['DELETE', 'GET', 'HEAD', 'POST', 'PUT'];
+  const validMethods = ['DELETE', 'GET', 'HEAD', 'PATCH', 'POST', 'PUT'];
 
   /*
    Copyright 2017 Google Inc. All Rights Reserved.

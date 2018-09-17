@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["positions"],{6507:function(n,o,i){"use strict";i.r(o);var s=function(){var n=this,o=n.$createElement,i=n._self._c||o;return i("div",[n._v("\n  Positions\n")])},t=[],e={name:"PositionsComponent"},l=e,u=i("2877"),p=Object(u["a"])(l,s,t,!1,null,null,null);p.options.__file="Positions.vue";o["default"]=p.exports}}]);
