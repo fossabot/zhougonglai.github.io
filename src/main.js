@@ -39,14 +39,14 @@ Vue.use(VueAnalytics, {
   },
   commands: {
     /**
-     * @argument { category<String>, action<String>, label<String>, value<String>}
-     * @description 分类, 动作, 标签, 携参
+     * @argument { category<String>, action<String>, label<String>, value<Number>}
+     * @description 分类, 动作, 标签, 价值
      */
     trackEvent (){
       this.$ga.event(...arguments)
     },
     /**
-     * @argument { category<String>, variable<String>, value<String>, label<String>}
+     * @argument { category<String>, variable<String>, value<Number>, label<String>}
      * @description 分类, 变量, 时间, 携参
      */
     timeTaken (){

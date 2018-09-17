@@ -10,16 +10,15 @@ import {time, exception} from 'vue-analytics'
  /**
   * @desc get请求序列化
   */
-export const queryString = query => {
-  return (typeof query === 'object')
+export const queryString = query => 
+  (typeof query === 'object')
     ? ('?' + Object.keys(query).map(param => `${param}=${encodeURIComponent(query[param])}`).join('&'))
     : ''
 }
-export const searchParams = query => {
-  return (typeof query === 'object')
+export const searchParams = query => 
+  (typeof query === 'object')
     ? `?${new URLSearchParams(query).toString()}`
     : ''
-}
 
 const abortableFetch = ('signal' in new Request('')) ? window.fetch : fetch
 
@@ -225,7 +224,7 @@ export const promisify = func => (...args) =>
 export const compose = (...fns) => fns.reduce((f, g) => (...args) => g(f(...args)));
 
 /**
- * @desc 独立线程
+ * @desc 独立线程,
  * @param {func}
  * @return {Promise}
  */
