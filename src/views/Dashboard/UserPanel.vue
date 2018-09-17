@@ -8,8 +8,7 @@
           </v-avatar>
           <v-spacer class="user-panel">
             <h2 class="text-sm-left" v-text="[basicInfo.firstName, basicInfo.middleName, basicInfo.lastName].join(' ')" />
-            <div v-text="localeDate" class="text-sm-left"></div>
-            <div class="text-sm-left"> asfasf</div>
+            <div v-text="`${localeDate} time on: America/New_York`" class="text-sm-left"></div>
           </v-spacer>
           <v-btn flat icon color="primary">
             <v-icon>info</v-icon>

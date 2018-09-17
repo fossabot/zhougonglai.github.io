@@ -8,7 +8,7 @@ import RavenVue from 'raven-js/plugins/vue';
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { $fetch, observer } from './utils/index'
+import { $fetch } from './utils/index'
 import './registerServiceWorker'
 import './main.styl'
 
@@ -81,9 +81,11 @@ new Vue({
 
 window.onload = function() {
   if(process.env.NODE_ENV !== 'development'){
-    observer.observe({
-      entryTypes: ['measure']
-    });
+    /**
+      observer.observe({
+        entryTypes: ['measure']
+      });
+    */
     performance.getEntriesByType('resource').forEach(({entryType, name, duration,initiatorType}) => {
       time(entryType, name, duration, initiatorType)
     })

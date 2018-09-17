@@ -1,6 +1,6 @@
 import 'whatwg-fetch'
 import * as qiniu from 'qiniu-js'
-import {time, exception} from 'vue-analytics'
+import {exception} from 'vue-analytics'
 
 /**
  *  @author john
@@ -14,7 +14,7 @@ export const queryString = query =>
   (typeof query === 'object')
     ? ('?' + Object.keys(query).map(param => `${param}=${encodeURIComponent(query[param])}`).join('&'))
     : ''
-}
+
 export const searchParams = query => 
   (typeof query === 'object')
     ? `?${new URLSearchParams(query).toString()}`
@@ -74,12 +74,17 @@ addEventListener('fetch', event => {
 /**
  * 性能监控
  */
+/** 
 export const observer = new PerformanceObserver(list => {
   list.getEntries().forEach(({entryType, name, duration, startTime}) => {
-    if(process.env.NODE_ENV === 'production')
+    if(process.env.NODE_ENV === 'production'){
       time(entryType, name, duration, startTime)
+    }else{
+      console.log(entryType, name, duration, startTime)
+    }
   });
 });
+*/
 
 // -- 七牛上传 -- //
 export const observable = (file, key, token, putExtra, config) => qiniu.upload(file, key, token, putExtra, config)
