@@ -11,6 +11,7 @@ import store from './store'
 import { $fetch } from './utils/index'
 import './registerServiceWorker'
 import './main.styl'
+import './utils/prototype'
 
 
 Raven
@@ -33,9 +34,9 @@ Vue.use(VueAnalytics, {
     exception: true
   },
   debug: {
-    enabled: process.env.NODE_ENV === 'developer', // default value
-    trace: process.env.NODE_ENV === 'developer', // default value
-    sendHitTask: true // default value
+    enabled: false, 
+    trace: process.env.NODE_ENV === 'production',
+    sendHitTask: process.env.NODE_ENV === 'production',
   },
   commands: {
     /**

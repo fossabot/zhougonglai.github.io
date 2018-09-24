@@ -2,7 +2,6 @@
   <div id="dashboard">
     <v-navigation-drawer app v-model="drawer">
       <v-list class="pt-0" >
-        <!-- <v-divider></v-divider> -->
         <v-list-tile v-for="item in items" exact :key="item.title" :to="item.path">
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -13,6 +12,8 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
+      <v-spacer />
+      <img src="http://dummyimage.com/230X160/2196f3/fff&text=这是广告" class="land_ad"/>
     </v-navigation-drawer>
     <v-toolbar app>
       <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
@@ -68,4 +69,9 @@ export default {
       margin 8px
   .v-content
     height -webkit-fill-available
+  .land_ad
+    width 230px
+    position absolute
+    bottom 35px
+    left 35px
 </style>

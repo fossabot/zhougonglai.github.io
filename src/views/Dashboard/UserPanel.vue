@@ -1,13 +1,25 @@
 <template>
   <v-layout row wrap fill-height id="user-panel">
-    <v-flex d-flex sm6 fill-height>
-      <v-card class="profile" color="blue">
+    <!-- User Panel -->
+    <v-flex sm6 fill-height class="scroll-flow-y">
+      <v-list>
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>Training Task</v-list-tile-title>
+            <v-list-tile-sub-title>Self Stady: Video</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn icon><v-icon>send</v-icon></v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+      </v-list>
+      <v-card class="profile mt-3">
         <v-card-title primary-title>
           <v-avatar class="user-pohoto" tile title="user pohoto">
             <img :src="pohoto" alt="user pohoto" />
           </v-avatar>
           <v-spacer class="user-panel">
-            <h2 class="text-sm-left" v-text="[basicInfo.firstName, basicInfo.middleName, basicInfo.lastName].join(' ')" />
+            <h2 class="text-sm-left" v-text="[info.firstName, info.middleName, info.lastName].join(' ')" />
             <div v-text="`${localeDate} time on: America/New_York`" class="text-sm-left"></div>
           </v-spacer>
           <v-btn flat icon color="primary">
@@ -24,10 +36,10 @@
                     <!-- 基本信息 -->
                     <v-list-tile>
                       <v-list-tile-action>
-                        <v-icon v-text="basicInfo.gender ? 'fa fa-male' : 'fa fa-female'"></v-icon>
+                        <v-icon v-text="info.gender ? 'fa fa-male' : 'fa fa-female'"></v-icon>
                       </v-list-tile-action>
                       <v-list-tile-content>
-                        <v-list-tile-title v-text="[basicInfo.firstName, basicInfo.middleName, basicInfo.lastName].join(' ')"></v-list-tile-title>
+                        <v-list-tile-title v-text="[info.firstName, info.middleName, info.lastName].join(' ')"></v-list-tile-title>
                         <v-list-tile-sub-title>First name ,Middle name ,Last name</v-list-tile-sub-title>
                       </v-list-tile-content>
                       <v-list-tile-action>
@@ -41,7 +53,7 @@
                         <v-icon>place</v-icon>
                       </v-list-tile-action>
                       <v-list-tile-content>
-                        <v-list-tile-title v-text="`from ${basicInfo.nationality}, live in ${basicInfo.residentialCountry} ${basicInfo.residentialCity}`" />
+                        <v-list-tile-title v-text="`from ${info.nationality}, live in ${info.residentialCountry} ${info.residentialCity}`" />
                         <v-list-tile-sub-title>Nationality ,Residential country ,Residential city</v-list-tile-sub-title>
                       </v-list-tile-content>
                       <v-list-tile-action>
@@ -55,7 +67,7 @@
                         <v-icon>contact_phone</v-icon>
                       </v-list-tile-action>
                       <v-list-tile-content>
-                        <v-list-tile-title v-text="`Mobile Phone: ${basicInfo.mobile.prefix}-${basicInfo.mobile.phone}, Skype: ${basicInfo.skype}`" />
+                        <v-list-tile-title v-if="info.mobile" v-text="`Mobile Phone: ${info.mobile.prefix}-${info.mobile.phone}, Skype: ${info.skype}`" />
                         <v-list-tile-sub-title>Mobile phone, Skype</v-list-tile-sub-title>
                       </v-list-tile-content>
                       <v-list-tile-action>
@@ -132,43 +144,108 @@
                 <v-icon size="24px">{{val.icon}}</v-icon>
               </v-btn>
             </v-expansion-panel-content>
+            <v-expansion-panel-content>
+              <div slot="header">Security</div>
+              <v-list>
+                <v-list-tile v-for="(security, i) in securitys" :key="i">
+                  <v-list-tile-content>
+                    <v-list-tile-title v-text="`Log on: ${security.address}`" />
+                    <v-list-tile-sub-title v-text="security.time" />
+                  </v-list-tile-content>
+                  <v-list-tile-action>
+                    <v-btn icon>
+                      <v-icon>help</v-icon>
+                    </v-btn>
+                  </v-list-tile-action>
+                </v-list-tile>
+              </v-list>
+            </v-expansion-panel-content>
           </v-expansion-panel>
         </v-card-text>
       </v-card>
     </v-flex>
-    <v-flex d-flex sm3>
-      panel2
+
+    <v-flex sm3 class="px-3">
+      <v-text-field class="task__input" v-model="task" label="Add a Task" solo @keydown.enter="create">
+        <v-fade-transition slot="append">
+          <v-icon v-if="task" @click="create">
+            add_circle
+          </v-icon>
+        </v-fade-transition>
+      </v-text-field>
+      <h2 class="headline success--text pl-3">
+        Tasks:&nbsp;
+        <v-fade-transition leave-absolute>
+          <span :key="`tasks-${todos.length}`">
+            {{ todos.length }}
+          </span>
+        </v-fade-transition>
+      </h2>
+      <v-divider class="mt-3"></v-divider>
+      <v-layout class="my-1 task__process" align-center>
+        <strong class="mx-3 info--text text--darken-3">
+          Remaining: {{ remainingTasks }}
+        </strong>
+        <v-divider vertical></v-divider>
+        <strong class="mx-3 black--text">
+          Completed: {{ completedTasks }}
+        </strong>
+        <v-spacer></v-spacer>
+        <v-progress-circular :value="progress" class="mr-2" />
+      </v-layout>
+      <v-divider class="mb-3"></v-divider>
+
+      <v-card v-if="tasks.length > 0">
+        <v-slide-y-transition class="py-0" group tag="v-list">
+          <template v-for="(task, i) in todos">
+            <v-divider v-if="i !== 0" :key="`${i}-divider`"/>
+            <v-list-tile :key="`${i}-${task.text}`">
+              <v-list-tile-action>
+                <v-checkbox v-model="task.done" color="info darken-3">
+                  <div slot="label" :class="task.done && 'grey--text' || 'text--primary'"
+                    class="ml-3" v-text="task.text"></div>
+                </v-checkbox>
+              </v-list-tile-action>
+              <v-spacer></v-spacer>
+              <v-scroll-x-transition>
+                <v-icon v-if="task.done" color="success">
+                  check
+                </v-icon>
+              </v-scroll-x-transition>
+            </v-list-tile>
+          </template>
+        </v-slide-y-transition>
+      </v-card>
     </v-flex>
+
     <v-flex d-flex sm3>
-      panel3
+      <v-list two-line class="daliy">
+        <v-subheader>Landi Daliy</v-subheader>
+        <template v-for="(item, index) in daliy">
+          <v-list-tile :key="`item__${index}`">
+            <v-list-tile-avatar>
+              <img :src="item.avatar" />
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title v-text="item.title"/>
+              <v-list-tile-sub-title v-text="item.subtitle" />
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-divider inset :key="`item--${index}`" v-if="daliy.length !== index"/>
+        </template>
+      </v-list>
     </v-flex>
   </v-layout>
 </template>
 <script>
 import pohoto from '@/assets/Platform.png'
-import {mapActions} from 'vuex';
+import {mapActions, mapState} from 'vuex';
 
 export default {
   name: 'UserPanel',
   data:() => ({
     pohoto,
     localeDate: new Date().toLocaleString(),
-    basicInfo: {
-      firstName: 'Zhou',
-      middleName: '',
-      lastName: 'GongLai',
-      gender: 1,
-      nationality: 'U.S.A',
-      residentialCountry: 'U.S.A',
-      residentialCity: 'HangZhou',
-      mobile: {
-        prefix: '+86',
-        phone: '12345678901'
-      },
-      skype: '12345678901',
-      knowUs: 'Referee',
-      referee: '838048635@qq.com'
-    },
     tasks: [
       {
         type: 'Pre Work',
@@ -178,6 +255,13 @@ export default {
       },
       {
         type: 'Transfer'
+      }
+    ],
+    task: '',
+    todos: [
+      {
+        done: false,
+        text: 'Metting on 3:00 PM'
       }
     ],
     icons: {
@@ -200,19 +284,74 @@ export default {
     },
     bankCard: {
       status: false
-    }
+    },
+    daliy:[
+      {
+        avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+        title: 'Brunch this weekend?',
+        subtitle: "I'll be in your neighborhood doing errands this weekend. Do you want to hang out?"
+      },
+      {
+        avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+        title: 'Summer BBQ',
+        subtitle: "Wish I could come, but I'm out of town this weekend."
+      },
+      {
+        avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+        title: 'Oui oui',
+        subtitle: "Do you have Paris recommendations? Have you ever been?"
+      }
+    ]
   }),
+  computed:{
+    completedTasks () {
+      return this.todos.filter(task => task.done).length
+    },
+    progress () {
+      return this.completedTasks / this.todos.length * 100
+    },
+    remainingTasks () {
+      return this.todos.length - this.completedTasks
+    },
+    ...mapState('user', [
+      'info', 'securitys'
+    ])
+  },
   methods: {
+    create(){
+      this.todos.push({
+        done: false,
+        text: this.task
+      })
+      this.task = null
+    },
     ...mapActions('provider',[
-      'getPosition', 'getTimeZone'
+      'getPosition', 'getTimeZone', 'addPermission', 'removePermission'
+    ]),
+    ...mapActions('user', [
+      'getInfo', 'securityLog'
     ])
   },
   created(){
     setInterval(() => {
       this.localeDate = new Date().toLocaleString()
     }, 1000)
-    this.getPosition()
-    .then(this.getTimeZone)
+
+    this.getInfo()
+    .then(() => this.securityLog())
+
+    navigator.permissions.query({name:'geolocation'})
+    .then((permissionStatus) => {
+       switch(permissionStatus.state){
+         case 'granted':
+          this.addPermission('geolocation')
+          this.getPosition()
+         break;
+         case 'denied':
+          this.removePermission('geolocation')
+         break;
+       }
+    })
   }
 }
 </script>
@@ -271,8 +410,13 @@ export default {
     position absolute
     left 0
     top 0
-  .v-list 
+  .v-list
+    &.daliy
+      width 100%
     .v-list__tile 
       .v-icon
         width 22px
+  .v-input--selection-controls 
+    .v-input__slot
+      margin-bottom 0
 </style>

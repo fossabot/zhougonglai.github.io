@@ -1,8 +1,6 @@
-const QiniuPlugin = require('qn-webpack');
-
 module.exports = {
   baseUrl: '/',
-  productionSourceMap: false,
+  // productionSourceMap: false,
   filenameHashing: process.env.NODE_ENV !== 'development',
   devServer: {
     proxy: {
@@ -14,7 +12,6 @@ module.exports = {
   },
   css: {
     modules: false,
-    extract: process.env.NODE_ENV !== 'development',
     sourceMap: process.env.NODE_ENV !== 'production'
   },
   pwa: {

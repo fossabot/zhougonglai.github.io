@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from "vuex-persistedstate"
-import { set} from 'vue-analytics'
+import {set, analyticsMiddleware} from 'vue-analytics'
 import {UUIDGeneratorBrowser} from './utils'
 import user from './store/user'
 import global from './store/global'
@@ -9,18 +9,26 @@ import provider from './store/provider'
 
 Vue.use(Vuex)
 
-const user_id = UUIDGeneratorBrowser()
+// @flow
+const uuid = UUIDGeneratorBrowser()
 
 export default new Vuex.Store({
   state: {
     env: process.env.NODE_ENV,
-    uuid:{user_id},
+    uuid,
   },
   mutations: {
+    SET_UUID (state, uuid){
+      state.uuid = uuid
+    }
   },
   actions: {
-    appInit(){
-      set('userId', user_id)
+    appInit({state, commit}){
+      if(state.uuid){
+        set('userId', uuid)
+      } else {
+        commit('SET_UUID', uuid)
+      }
     }
   },
   modules: {
@@ -29,6 +37,6 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
        key: 'teacher',
-    })
+    }), analyticsMiddleware
   ]
 })

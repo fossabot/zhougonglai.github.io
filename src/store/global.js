@@ -3,8 +3,9 @@ export default {
   state: {
     snackbar:{
       status: false,
-      message: ''
-    }
+      message: '',
+    },
+    activeDate: '',
   },
   mutations: {
     SET_SNACKBAR (state, snackbar){
@@ -12,6 +13,9 @@ export default {
         ...state.snackbar,
         ...snackbar
       }
+    },
+    SET_ACTIVE_DATE (state, date) {
+      state.activeDate = date
     }
   },
   actions: {
@@ -22,6 +26,7 @@ export default {
       commit('SET_SNACKBAR', {
         status, message, ...args
       })
-    }
+    },
+    setActiveDate: ({commit}, date) => commit('SET_ACTIVE_DATE', date)
   }
 }

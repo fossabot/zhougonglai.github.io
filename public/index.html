@@ -17,30 +17,30 @@
     <script src='https://www.google.com/recaptcha/api.js?render=6LejNG8UAAAAAC2CvcJuCW6b-nEzkKM9OIn_nnJl'></script>
     <% } %>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <script src="https://at.alicdn.com/t/font_544405_avyexo4myj.js" />
+    <script src="https://at.alicdn.com/t/font_544405_avyexo4myj.js"></script>
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>landi_ui</title>
-    <script>
-        window.fbAsyncInit = function() {
-          FB.init({
-            appId      : '263543064265851',
-            cookie     : true,
-            xfbml      : true,
-            version    : 'v3.1'
-          });
-          FB.AppEvents.logPageView();
-        };
-        (function(d, s, id) {
-          var js, fjs = d.getElementsByTagName(s)[0];
-          if (d.getElementById(id)) return;
-          js = d.createElement(s); js.id = id;
-          js.src = "https://connect.facebook.net/en_US/sdk/debug.js";
-          fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-      </script>
   </head>
   <body>
-    <!-- <div id="fb-root"></div> -->
+    <div id="fb-root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '263543064265851',
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v3.1'
+        });
+        FB.AppEvents.logPageView();
+      };
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk/debug.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
     <noscript>
       <strong>
         We're sorry but landi_ui doesn't work properly without JavaScript enabled. Please enable it to continue.

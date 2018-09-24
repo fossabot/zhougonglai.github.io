@@ -36,8 +36,24 @@ export default new Router({
         },
         {
           path: 'calendar',
-          name: 'calendar',
-          component: () => import(/* webpackChunkName: "Dashboard.calendar" */ '@/views/Dashboard/Calendar.vue')
+          component: () => import(/* webpackChunkName: "Dashboard.calendar" */ '@/views/Dashboard/Calendar.vue'),
+          children: [
+            {
+              path: '',
+              name: 'calendar',
+              component: () => import(/* webpackChunkName: "Dashboard.calendar.monthly" */ '@/views/Dashboard/Calendar/Monthly.vue')
+            },
+            {
+              path: 'weekly',
+              name: 'weekly',
+              component: () => import(/* webpackChunkName: "Dashboard.calendar.weekly" */ '@/views/Dashboard/Calendar/Weekly.vue')
+            },
+            {
+              path: 'daliy',
+              name: 'daliy',
+              component: () => import(/* webpackChunkName: "Dashboard.calendar.daliy" */ '@/views/Dashboard/Calendar/Daliy.vue'),
+            }
+          ]
         }
       ]
     }

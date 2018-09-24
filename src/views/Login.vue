@@ -18,28 +18,14 @@
           <v-text-field v-model="login.email" label="Email address" 
             type="email" prepend-inner-icon="person_outline" 
             solo :required="login.valid" 
-            :rules="login.valid ? [] : login.mailRules">
-            <v-fade-transition slot="append" v-if="login.loading">
-              <v-progress-circular
-                size="24"
-                color="info"
-                indeterminate
-              ></v-progress-circular>
-            </v-fade-transition>
-          </v-text-field>
+            :rules="login.valid ? [] : login.mailRules" />
           <v-text-field v-model="login.password" label="Password"
             :type="login.pwType? 'password': 'text'" :prepend-inner-icon="login.pwType? 'lock': 'lock_open'" 
             solo :required="login.valid" :hint="login.score[login.strength] + login.warning + login.suggestions"
             @input="pwInput" :rules="login.valid ? [] : login.passwordRules"
             @click:prepend-inner="togglePWType">
             <v-fade-transition slot="append">
-              <v-progress-circular
-                v-if="login.loading"
-                size="24"
-                color="info"
-                indeterminate
-              ></v-progress-circular>
-              <div v-else class="password-input-docs">
+              <div class="password-input-docs">
                 <div class="password-input-doc" :class="{select:login.strength === 4}"/>
                 <div class="password-input-doc" :class="{select:login.strength >= 3}"/>
                 <div class="password-input-doc" :class="{select:login.strength >= 2}"/>

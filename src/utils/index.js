@@ -31,8 +31,8 @@ const controller = new AbortController()
 
 export const $fetch = {
   abort: () => controller.abort(),
-  post:(url, token, data) => 
-    abortableFetch(`${url}?token=${token}`, {
+  post:(url, data) => 
+    abortableFetch(url, {
         method: 'POST', mode: 'cors',
         body: JSON.stringify(data),
         signal: controller.signal,

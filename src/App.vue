@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="grey lighten-3">
     <router-view/>
     <v-snackbar v-model="snackbar.status" top auto-height>
       {{snackbar.message}}
@@ -7,7 +7,7 @@
         Close
       </v-btn>
     </v-snackbar>
-    <v-footer height="auto" app>
+    <v-footer height="auto" app v-if="$route.path.indexOf('/dashboard') === -1">
       <v-card class="flex" flat tile>
         <v-card-title class="primary">
           <strong class="subheading white--text">Get connected with us on social networks!</strong>
