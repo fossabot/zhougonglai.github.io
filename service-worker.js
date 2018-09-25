@@ -15,7 +15,7 @@ importScripts("/workbox-v3.5.0/workbox-sw.js");
 workbox.setConfig({modulePathPrefix: "/workbox-v3.5.0"});
 
 importScripts(
-  "/precache-manifest.1318c6cca8f91e9e7d305a056bda57e9.js"
+  "/precache-manifest.2f0a289187ed8ad57ea2c0f2a47dc0e1.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "landi_ui"});
