@@ -95,6 +95,10 @@ export default {
     ])
   },
   methods:{
+    setActiveData(activeDate){
+      this.tasks = this.calendar.filter(task => new Date(task.date).getDate() === activeDate.getDate())
+      .sort((a,b) => new Date(a.date).getHours() - new Date(b.date).getHours())
+    },
     togglerMenu(i){
       if(i){
         this.options.filter = !this.options.filter
@@ -115,10 +119,7 @@ export default {
   created(){
     const activeDate = new Date(parseInt(this.$route.query.date))
     this.setActiveDate(activeDate)
-    .then(() => {
-      this.tasks = this.calendar.filter(task => new Date(task.date).getDate() === new Date(parseInt(this.$route.query.date)).getDate())
-      .sort((a,b) => new Date(a.date).getHours() - new Date(b.date).getHours())
-    })
+    .then(() => this.setActiveData(activeDate))
   },
   destroyed(){
     this.setActiveDate('')

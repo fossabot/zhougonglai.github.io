@@ -2,7 +2,7 @@
   <v-layout column fill-height id="calendar">
     <v-layout align-center class="toolbar">
       <div>
-        <v-btn small outline flat color="primary">Today</v-btn>
+        <v-btn small outline flat color="primary" @click="today">Today</v-btn>
         <v-btn small outline flat @click="prevPart">
           <v-icon>arrow_back</v-icon>
         </v-btn>
@@ -31,7 +31,7 @@
   </v-layout>
 </template>
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
 export default {
   name: 'Calendar',
@@ -49,7 +49,7 @@ export default {
   computed:{
     labels(){
       const Labels = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-      if(this.activeDate && this.activeDate.constructor.name === "Date"){
+      if(this.activeDate && this.activeDate.constructor.name === "Date" && this.$route.name === 'daliy'){
         return Labels.filter((label, i) => i === this.activeDate.getDay())
       } else {
         return Labels
@@ -68,22 +68,47 @@ export default {
         }
       })
     },
+    today(){
+      switch(this.calendar_model){
+        case 'Monthly':
+          this.openSnackBar({message: '还没有实现月级别切换'});
+          break;
+        case 'Weekly':
+          break;
+        case 'Daliy':
+          this.setActiveDate(new Date())
+          break;
+      }
+    },
     prevPart(){
       switch(this.calendar_model){
         case 'Monthly':
-          console.log('Monthly')
+          this.openSnackBar({message: '还没有实现月级别切换'});
           break;
         case 'Weekly':
           console.log('Weekly')
           break;
         case 'Daliy':
-          console.log('Daliy')
+          this.setActiveDate(new Date(this.activeDate.setDate(this.activeDate.getDate() - 1)))
           break;
       }
     },
     nextPart(){
-
-    }
+      switch(this.calendar_model){
+        case 'Monthly':
+          this.openSnackBar({message: '还没有实现月级别切换'});
+          break;
+        case 'Weekly':
+          console.log('Weekly')
+          break;
+        case 'Daliy':
+          this.setActiveDate(new Date(this.activeDate.setDate(this.activeDate.getDate() + 1)))
+          break;
+      }
+    },
+    ...mapActions('global',[
+      'openSnackBar', 'setActiveDate'
+    ])
   },
   created(){
   }
